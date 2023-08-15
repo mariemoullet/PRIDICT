@@ -1,9 +1,9 @@
 # Pridict pipeline
 
 This repo provides scripts to run the pridict algorithm [Mathis et al, 2023](https://www.nature.com/articles/s41587-022-01613-7) automatically for mulitple 
-inputs 
+inputs. See documentation [here](./PRIDICT/README.md) for explanations on the PRIDICT model itself. 
 
-# Setting up the pipeline
+## Setting up the pipeline
 
 In order to run the pipeline, create a master folder in which you will keep all the scripts / analysis from this repository. 
 
