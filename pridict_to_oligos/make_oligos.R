@@ -47,7 +47,7 @@ wrangle_pridict <- function(df, target_mut, keep_top = guides_to_keep){
   return(df)
 }
 
-make_oligos <- function(x, design = "lentiviral") {
+make_oligos <- function(x, design = "epegRNA") {
   # There are three design option available, classic (for transfection, normal spacer), lentiviral (using the enhanced spacer), and epegRNA (both for transfection and lentivirus, enhanced spacer)
   if(design == "classic") {
     output_df <- mutate(x,
@@ -113,7 +113,7 @@ make_pegrna_table <- function(df) {
     unite("pegRNA", c(SpF, scaffold, ExF), sep = "") %>%
     mutate(`for Gibson assembly` = paste("TATCTTGTGGAAAGGACGAAA", 
                                          pegRNA, 
-                                         "GCGCGGTTCTATCTAGTTACGCGT", 
+                                         "CGCGGTTCTATCTAGTTACGCGT", 
                                          sep = "")) %>%
     mutate(length = nchar(pegRNA)) %>%
     mutate(`length with GA overhang` = nchar(`for Gibson assembly`))
