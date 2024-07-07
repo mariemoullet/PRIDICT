@@ -121,7 +121,38 @@ make_pegrna_table <- function(df) {
   return(df2)
 }
 
+add_genomic_context <- function(df) {
+    # Read the intermediate file
+    intermediate_file <- read.csv('intermediate/pridict_input.csv', stringsAsFactors = FALSE)
 
+    # Function to wrangle mutations
+    rm_mut <- function(x) {
+    x <- gsub("\\(./", "", x)
+    x <- gsub("\\)", "", x)
+    return(x)
+    }
+
+    # Apply the function to editseq column
+    intermediate_file$editseq <- sapply(intermediate_file$editseq, rm_mut)
+
+    # Rename editseq column to genomic_context
+    colnames(intermediate_file)[colnames(intermediate_file) == "editseq"] <- "genomic_context"  
+
+    # Create sequence_name column in df
+    df$sequence_name <- paste(df$gene, df$mutation, sep = "_")
+
+    # Join df with intermediate_file based on sequence_name
+    df <- df %>%
+    left_join(intermediate_file, by = "sequence_name")
+
+    # Drop sequence_name column
+    df <- df %>%
+    select(-sequence_name)
+
+    # Rename editseq column
+
+    return(df)
+}
 
 # Run ---------------------------------------------------------------------
 
@@ -154,6 +185,9 @@ if (args[1] == TRUE){
     slice_min(as.numeric(pridict_rank), n = 3) 
 
 }
+    
+# Add genomic context
+pegrna_table <- add_genomic_context(pegrna_table)
   
 # add unique identifier
 pegrna_table$id <- apply(pegrna_table, 1, function(x) digest(x, algo = "crc32"))
