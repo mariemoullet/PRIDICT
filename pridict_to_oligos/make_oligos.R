@@ -12,9 +12,9 @@ library(digest)
 args = commandArgs(trailingOnly=TRUE)
 
 if (args[1] == TRUE){
-    guides_to_keep = 50 # we keep the top 50 and within that keep the top 3 which are <= 200 bp
+    guides_to_keep = 50 # we keep the top 50 and within that keep the top 5 which are <= 200 bp
 } else {
-    guides_to_keep = 3
+    guides_to_keep = 5
 }
 
 output_file <- args[2]
@@ -26,7 +26,7 @@ rc <- function(x) {toupper(spgs::reverseComplement(x))}
 
 wrangle_pridict <- function(df, target_mut, keep_top = guides_to_keep){
   # df is pridict output csv file
-  # get top 3 ranking pegRNAs 
+  # get top 5 ranking pegRNAs 
   df <- df %>%
     arrange(rank) %>%
     head(n = keep_top) %>%
@@ -182,7 +182,7 @@ if (args[1] == TRUE){
   pegrna_table <- pegrna_table %>%
     filter(`length with GA overhang` <= 200) %>%
     group_by(gene, mutation) %>%
-    slice_min(as.numeric(pridict_rank), n = 3) 
+    slice_min(as.numeric(pridict_rank), n = 5) 
 
 }
     
