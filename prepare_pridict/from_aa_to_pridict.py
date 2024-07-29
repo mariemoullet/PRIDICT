@@ -8,11 +8,15 @@ df = pd.read_csv("intermediate/input_gx_location.csv")
 # get codon 
 df["codon"] = df.apply(lambda row: get_sequence(row['chrom'],
                                                 row['codon_start'], 
-                                                row['codon_end']+1), axis=1)
+                                                row['codon_end']+1,
+                                                row['strand']
+                                                ), axis=1)
 
 df["sequence"] = df.apply(lambda row: get_sequence(row['chrom'],
                                                    row['seq_start'], 
-                                                   row['seq_end']+1), axis=1)
+                                                   row['seq_end']+1,
+                                                   row['strand']
+                                                   ), axis=1)
 
 # columns need to be 
 # gene codon position_label sequence

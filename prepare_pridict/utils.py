@@ -9,13 +9,57 @@ import numpy as np
 #### Wrangle input sequence #####
 #################################
 
-def get_sequence(chromosome, start_seq, end_seq):
+BASE_URL = 'http://api.genome.ucsc.edu'
+
+def raiseExceptionOfRequest(response):
+    if response.get('statusCode') == 400:
+        raise NotFoundException('Something went wrong, ' + response.get('error'))
+
+    if response.get('statusCode') == 403:
+        raise NotAllowedException('The Requested Resource is not allowed to be accessed' + response.get('error'))
+
+    if response.get('error') is not None:
+        raise NotFoundException('An error happened, ' + response.get('error'))
+
+    pass
+
+class Sequence:
+    '''
+    adapted from 
+    https://github.com/Eyadhamza/UCSC-Genomic-REST-Api-Wrapper/blob/main/ucsc/api.py#L327
+    '''
+    requestUrl = ''
+    requestParams = {}
+    responseKey = ''
+
+    def __init__(self, genome, chrom, dna=None, hub=None, track=None, start=None, end=None,**kwargs):
+        self.end = end
+        self.start = start
+        self.track = track
+        self.hub = hub
+        self.chrom = chrom
+        self.dna = dna
+        self.genome = genome
+
+    @classmethod
+    def get(cls, genome, chrom, hubUrl=None, start=None, end=None, revComp=0):
+        cls.requestUrl = BASE_URL + '/getData/sequence'
+        cls.requestParams = {'hubUrl': hubUrl, 'genome': genome, 'chrom': chrom, 'start': start, 'end': end, 'revComp' : revComp}
+        response = requests.get(cls.requestUrl, cls.requestParams).json()
+        raiseExceptionOfRequest(response)
+        return Sequence(**response)
+
+def get_sequence(chromosome, start_seq, end_seq, strand):
     """
     get genomic DNA sequence from chromosome number, start and end position
     """
+    if (strand == '+'):
+        rev_comp = 0
+    else:
+        rev_comp = 1
     
     sequence = Sequence.get(
-        genome="hg38", chrom=chromosome, start=start_seq, end=end_seq
+        genome="hg38", chrom=chromosome, start=start_seq, end=end_seq, revComp=rev_comp
     )
     
     return sequence.dna
