@@ -71,6 +71,7 @@ To run this version, create an input file called `input_gene_aa.csv` in the pipe
 * id :ENSEMBL MANE protein id eg ENSP00000275493
 * chrom : chromosome number eg 7
 * aa : amino acid position eg 797
+* strand : gene strand orientation (+ or -)
 
 
 ## 2. All possible single nucleotide substitutions at a specific genomic position 
