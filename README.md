@@ -69,6 +69,7 @@ If you have multiple codons/proteins of interest, you can automatically generate
 To run this version, create an input file called `input_gene_aa.csv` in the pipeline directory where columns are 
 * gene : entrez symbol eg EGFR
 * id :ENSEMBL MANE protein id eg ENSP00000275493
+* chrom : chromosome number eg 7
 * aa : amino acid position eg 797
 
 
@@ -76,7 +77,7 @@ To run this version, create an input file called `input_gene_aa.csv` in the pipe
 
 This is part is designed to use prime editing to engineer mutations at sites targeted by base editors. The pipeline expects an input format with at least the following columns:
 * Gene : gene symbol eg EGFR
-* chr : chromsome number eg 7
+* chr : chromosome number eg 7
 * Edit_Location : genomic locations of possible edits, separated by ;
 
 
