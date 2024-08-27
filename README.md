@@ -88,7 +88,7 @@ This is part is designed to use prime editing to engineer mutations at sites tar
 To run the pipeline, in command line run 
 
 ```
-bash run_batch_mode.sh <intput_filename> [--filter=<filter>] [--output=<output_filename.csv>]
+bash run_batch_mode.sh [--filter=<filter>] [--output=<output_filename.csv>] <intput_filename>
 ```
 
 The input arguments are
