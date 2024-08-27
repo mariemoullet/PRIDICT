@@ -208,6 +208,7 @@ def single_change_from_seq(seq):
     """
 
     # Get amino acid from codon
+    seq = seq.upper()
     aa = [key for key, value in codon_dict.items() if seq in value][0]
 
     # Take Amino acid object
