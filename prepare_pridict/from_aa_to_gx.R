@@ -37,7 +37,7 @@ get_gnm_from_prt <- function(gene, aa, chrom){
   edbx <- filter(EnsDb.Hsapiens.v86, filter = ~ seq_name == chrom)
   
   prt <- IRanges(start = aa, end = aa, names = gene)
-  
+    
   gnm <- proteinToGenome(prt, edbx)
   
   # -1 to convert to UCSC indexing
@@ -54,6 +54,38 @@ input_df$codon_start <- apply(input_df, 1, function(x) get_gnm_from_prt(x["id"],
                                                                         x["aa"], 
                                                                         x["chrom"] 
                                                                         ))
+# Identify rows where codon_start contains NA values
+na_rows <- sapply(input_df$codon_start, function(x) any(is.na(x)))
+
+# If there are any rows with missing values, print the warning
+if (any(na_rows)) {
+  # Print a warning for the dropped rows (id and aa)
+  cat(sprintf("Dropping %d rows:\n", sum(na_rows)))
+  
+  # Print the specific rows that will be dropped
+  dropped_rows <- input_df[na_rows, c("id", "aa")]
+  apply(dropped_rows, 1, function(row) {
+    cat(sprintf("id: %s, aa: %s\n", row["id"], row["aa"]))
+  })
+}
+
+# Filter the input_df to remove the rows with missing codon_start values
+input_df <- input_df[!na_rows, ]
+# Check for multiple values in codon_start and print them
+multiple_values_rows <- sapply(input_df$codon_start, function(x) length(x) > 1)
+
+if (any(multiple_values_rows)) {
+  cat("The following rows have multiple values (corresponding to different exons) in codon_start:\n")
+  apply(input_df[multiple_values_rows, ], 1, function(row) {
+    codon_values <- paste(as.character(row$codon_start), collapse = ", ")
+    cat(sprintf("id: %s, aa: %s, codon_start: %s\n", row["id"], row["aa"], codon_values))
+  })
+  cat('Selecting the first exon \n')
+}
+
+# If codon_start has multiple values, take the first value only
+input_df$codon_start <- sapply(input_df$codon_start, function(x) as.numeric(x[1]))
+            
 input_df$codon_end <- input_df$codon_start + 2
 
 input_df$seq_start <- input_df$codon_start - 100
