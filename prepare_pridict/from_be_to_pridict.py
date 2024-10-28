@@ -8,7 +8,7 @@ from utils import *
 tqdm.pandas()
 
 # Load data
-be_in = pd.read_csv("input_from_be.csv", index_col=0)
+be_in = pd.read_csv("input_from_be.csv")
 
 # Wrangle into long format with one row per gene, chromosome, position
 
@@ -23,15 +23,16 @@ df = df.drop(columns="Edit_Location").explode("position")
 
 # focus on single nt changes for now
 single_nt = df[~df.position.str.contains("-")].copy()
-single_nt.position = single_nt.position.astype(int)
+
+# drop chromosome information to keep only position
+single_nt['position'] = single_nt['position'].str.split(':').str[-1].astype(int)
 single_nt["start_seq"] = single_nt.position - 100
 single_nt["end_seq"] = single_nt.position + 100
 
-single_nt.head()
 
 # get DNA sequence
 single_nt["sequence"] = single_nt.apply(
-    lambda row: get_sequence(row["chromosome"], row["start_seq"], row["end_seq"]),
+    lambda row: get_sequence(row["chromosome"], row["start_seq"], row["end_seq"], '+'),
     axis=1,
 )
 
