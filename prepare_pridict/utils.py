@@ -388,6 +388,11 @@ def get_vep(hvgs_in):
         aa_pos = re.findall(r'\d+', hvgs_in[hvgs_in.find("g.")+2 : len(hvgs_in)])[0] # get genomic position from HVGS in to discriminate between different 3'UTR changes
         codon_change = ""
         
+    else:
+        aa_change = decoded[0]["most_severe_consequence"]
+        aa_pos = re.findall(r'\d+', hvgs_in[hvgs_in.find("g.")+2 : len(hvgs_in)])[0]
+        codon_change = '?'
+        
 
     vep_out = aa_change + "_" + codon_change + "_" + str(aa_pos)
 
